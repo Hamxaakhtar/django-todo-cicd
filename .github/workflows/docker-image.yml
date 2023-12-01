@@ -43,7 +43,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
               # Now we have got the access of EC2 and we will start the deploy.
              #git clone https://github.com/Hamxaakhtar/django-todo-cicd.git '
-             cd django-todo-cicd/ && docker-compose up --build -d 
+             cd /home/ubuntu/django-todo-cicd && docker-compose up --build -d 
              
               
 
