@@ -1,9 +1,8 @@
 name: Docker Image CI
 on:
-  workflow_dispatch:
+  
   push:
-   tags:
-    - 'v*'
+ 
 
 jobs:
   push_to_registry_of_student:
@@ -24,7 +23,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: hamxaakhtar/django:'v1.0.0'
+          images: hamxaakhtar/django:latest
           tags: |
             type=semver,pattern={{version}}
       
