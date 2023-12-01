@@ -24,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: hamxaakhtar/django:latest
+          images: hamxaakhtar/django:'v1.0.0'
           tags: |
             type=semver,pattern={{version}}
       
