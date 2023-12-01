@@ -1,8 +1,10 @@
 name: Docker Image CI
+
 on:
-  
+  workflow_dispatch:
   push:
- 
+    branches:
+      - main
 
 jobs:
   push_to_registry_of_student:
@@ -19,22 +21,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: hamxaakhtar/django:latest
-          tags: |
-            type=semver,pattern={{version}}
-      
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      
+          tags: hamxaakhtar/django:latest
+          labels: |
+            org.opencontainers.image.description=This repo is for Django todo app deployment as a Devops engineer via Jenkins
+            org.opencontainers.image.url=https://github.com/Hamxaakhtar/django-todo-cicd
+            org.opencontainers.image.version=1.0.0  # Replace with your version
+
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -46,4 +43,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
               # Now we have got the access of EC2 and we will start the deploy .
               docker-compose pull && docker-compose up -d '
+
           
