@@ -1,14 +1,13 @@
 name: Docker Image CI
 
 on:
-  
   push:
     branches:
       - main
 
 jobs:
   push_to_registry_of_student:
-    name: Push Docker image to Docker Hub
+    name: Push Docker image to Docker Hub and Deploy
     runs-on: ubuntu-20.04
     
     steps:
@@ -31,21 +30,14 @@ jobs:
             org.opencontainers.image.description=This repo is for Django todo app deployment as a Devops engineer via Jenkins
             org.opencontainers.image.url=https://github.com/Hamxaakhtar/django-todo-cicd
             org.opencontainers.image.version=1.0.0  # Replace with your version
-
-      - name: Build & Deploy
+      
+      - name: Deploy to EC2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOSTNAME: ${{ secrets.EC2_PUBLIC_IP }}
           USER_NAME: ${{ secrets.USER_NAME }}
-      
-        run: |
-             echo "$PRIVATE_KEY " > private_key && chmod 600 private_key
-             ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'cd django-todo-cicd/ && docker-compose up --build -d'
-
-              # Now we have got the access of EC2 and we will start the deploy.
-             #git clone https://github.com/Hamxaakhtar/django-todo-cicd.git '
-            
-             
-              
-
           
+        run: |
+          echo "$PRIVATE_KEY " > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'cd django-todo-cicd/ && docker-compose up --build -d'
